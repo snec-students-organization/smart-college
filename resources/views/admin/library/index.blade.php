@@ -29,8 +29,12 @@
                             <x-text-input id="author" name="author" class="block mt-1 w-full" required />
                         </div>
                          <div class="lg:col-span-1">
-                            <x-input-label for="isbn" value="ISBN" />
-                            <x-text-input id="isbn" name="isbn" class="block mt-1 w-full" />
+                            <x-input-label for="book_number" value="Book Number" />
+                            <x-text-input id="book_number" name="book_number" class="block mt-1 w-full" />
+                        </div>
+                        <div class="lg:col-span-1">
+                            <x-input-label for="price" value="Price" />
+                            <x-text-input id="price" type="number" step="0.01" name="price" class="block mt-1 w-full" required />
                         </div>
                         <div class="lg:col-span-1">
                             <x-input-label for="quantity" value="Qty" />
@@ -58,7 +62,8 @@
                                 <tr>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Author</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ISBN</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Book Number</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Qty</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                                 </tr>
@@ -68,7 +73,8 @@
                                     <tr>
                                         <td class="px-6 py-4 whitespace-nowrap font-medium">{{ $book->title }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap">{{ $book->author }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $book->isbn ?? '-' }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $book->book_number ?? '-' }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ number_format($book->price, 2) }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm">{{ $book->quantity }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                             <form action="{{ route('admin.library.destroy', $book) }}" method="POST" onsubmit="return confirm('Delete this book?');">

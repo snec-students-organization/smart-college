@@ -24,7 +24,8 @@ class LibraryController extends Controller
         $request->validate([
             'title' => 'required|string',
             'author' => 'required|string',
-            'isbn' => 'nullable|string|unique:books,isbn',
+            'book_number' => 'nullable|string|unique:books,book_number',
+            'price' => 'required|numeric|min:0',
             'quantity' => 'required|integer|min:1',
             'rack_no' => 'nullable|string',
         ]);
@@ -54,7 +55,9 @@ class LibraryController extends Controller
     }
 
     public function issueBookCreate() {
-        $books = Book::where('quantity', '>', 0)->get(); // Should technically check available copies
+        $books = Book::withCount(['book_issues as active_issues_count' => function ($query) {
+            $query->whereNull('return_date');
+        }])->where('quantity', '>', 0)->get();
         $classes = SchoolClass::with('sections')->get();
         return view('admin.library.issue_create', compact('books', 'classes'));
     }
@@ -66,8 +69,12 @@ class LibraryController extends Controller
             'due_date' => 'required|date|after_or_equal:today',
         ]);
 
-        // Check availability logic (simplified for now)
-        // In real app, check count of BookIssue where return_date is null for this book_id vs Book->quantity
+        $book = Book::findOrFail($request->book_id);
+        $activeIssues = BookIssue::where('book_id', $book->id)->whereNull('return_date')->count();
+
+        if ($activeIssues >= $book->quantity) {
+            return redirect()->back()->withErrors(['book_id' => 'This book is not available for issue.']);
+        }
 
         BookIssue::create([
             'book_id' => $request->book_id,

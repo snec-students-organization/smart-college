@@ -18,7 +18,12 @@
                             <select id="book_id" name="book_id" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm select2" required>
                                 <option value="">-- Choose Book --</option>
                                 @foreach($books as $book)
-                                    <option value="{{ $book->id }}">{{ $book->title }} ({{ $book->quantity }} available)</option>
+                                    @php
+                                        $available = $book->quantity - $book->active_issues_count;
+                                    @endphp
+                                    <option value="{{ $book->id }}" {{ $available <= 0 ? 'disabled' : '' }}>
+                                        {{ $book->title }} ({{ $available > 0 ? $available . '/' . $book->quantity . ' available' : 'Not Available' }})
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
