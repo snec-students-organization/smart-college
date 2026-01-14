@@ -17,6 +17,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
     
     // Academic Management
+    Route::resource('students', \App\Http\Controllers\Admin\StudentController::class);
     Route::get('classes', [\App\Http\Controllers\Admin\ClassController::class, 'index'])->name('classes.index');
     Route::post('classes', [\App\Http\Controllers\Admin\ClassController::class, 'store'])->name('classes.store');
     Route::delete('classes/{class}', [\App\Http\Controllers\Admin\ClassController::class, 'destroy'])->name('classes.destroy');
@@ -25,6 +26,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     Route::post('classes/{class}/sections', [\App\Http\Controllers\Admin\ClassController::class, 'storeSection'])->name('classes.sections.store');
     Route::delete('sections/{section}', [\App\Http\Controllers\Admin\ClassController::class, 'destroySection'])->name('classes.sections.destroy');
+    Route::get('classes/{class}/sections', [\App\Http\Controllers\Admin\ClassController::class, 'getSections'])->name('classes.sections.index');
 
     Route::resource('subjects', \App\Http\Controllers\Admin\SubjectController::class)->only(['index', 'store', 'destroy']);
 

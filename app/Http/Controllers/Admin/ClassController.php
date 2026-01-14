@@ -50,4 +50,9 @@ class ClassController extends Controller
         $section->delete();
         return redirect()->back()->with('success', 'Section deleted successfully.');
     }
+
+    public function getSections(SchoolClass $class)
+    {
+        return response()->json($class->sections);
+    }
 }
