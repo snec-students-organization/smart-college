@@ -27,21 +27,6 @@
                             <x-input-label for="section_id" :value="__('Section')" />
                             <select id="section_id" name="section_id" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
                                 <option value="">Select Section</option>
-                                <!-- Sections should ideally be loaded dynamically via JS based on class, 
-                                     but for now we can iterate all or handle simpler logic. 
-                                     Here we assume teacher knows which section belongs to which class or 
-                                     we can do a grouped select if needed. 
-                                     For MVP, we'll list all sections grouped by class or just simple list if unique names.
-                                     Actually, let's just show all sections for simplicity or rely on user picking right one.
-                                     Better: Group by class in the loop if possible or just dump all sections.
-                                -->
-                                @foreach($classes as $class)
-                                    <optgroup label="{{ $class->name }}">
-                                        @foreach($class->sections as $section)
-                                            <option value="{{ $section->id }}">{{ $section->name }}</option>
-                                        @endforeach
-                                    </optgroup>
-                                @endforeach
                             </select>
                         </div>
 
@@ -59,4 +44,29 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const classSelect = document.getElementById('class_id');
+            const sectionSelect = document.getElementById('section_id');
+
+            classSelect.addEventListener('change', function() {
+                const classId = this.value;
+                sectionSelect.innerHTML = '<option value="">Select Section</option>';
+
+                if (classId) {
+                    fetch(`/lookup/classes/${classId}/sections`)
+                        .then(response => response.json())
+                        .then(data => {
+                            data.forEach(section => {
+                                const option = document.createElement('option');
+                                option.value = section.id;
+                                option.textContent = section.name;
+                                sectionSelect.appendChild(option);
+                            });
+                        });
+                }
+            });
+        });
+    </script>
 </x-app-layout>

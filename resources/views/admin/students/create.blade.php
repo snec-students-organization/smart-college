@@ -105,7 +105,7 @@
             sectionSelect.innerHTML = '<option value="">Select Section</option>';
 
             if (classId) {
-                fetch(`/admin/classes/${classId}/sections`)
+                fetch(`/lookup/classes/${classId}/sections`)
                     .then(response => response.json())
                     .then(data => {
                         // Always show, just populate

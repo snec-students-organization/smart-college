@@ -11,6 +11,12 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+// Shared Lookup Routes
+Route::middleware('auth')->group(function () {
+    Route::get('lookup/classes/{class}/sections', [\App\Http\Controllers\Admin\ClassController::class, 'getSections'])->name('lookup.sections');
+    Route::get('lookup/classes/{class}/subjects', [\App\Http\Controllers\Admin\ClassController::class, 'getSubjects'])->name('lookup.subjects');
+});
+
 // Admin Routes
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\AdminController::class, 'dashboard'])->name('dashboard');
@@ -26,7 +32,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     Route::post('classes/{class}/sections', [\App\Http\Controllers\Admin\ClassController::class, 'storeSection'])->name('classes.sections.store');
     Route::delete('sections/{section}', [\App\Http\Controllers\Admin\ClassController::class, 'destroySection'])->name('classes.sections.destroy');
-    Route::get('classes/{class}/sections', [\App\Http\Controllers\Admin\ClassController::class, 'getSections'])->name('classes.sections.index');
+
 
     Route::resource('subjects', \App\Http\Controllers\Admin\SubjectController::class)->only(['index', 'store', 'destroy']);
 
@@ -61,6 +67,7 @@ Route::middleware(['auth', 'role:teacher'])->prefix('teacher')->name('teacher.')
 
     // Marks
     Route::get('/marks', [\App\Http\Controllers\TeacherController::class, 'marksIndex'])->name('marks.index');
+    Route::get('/marks/list', [\App\Http\Controllers\TeacherController::class, 'marksList'])->name('marks.list');
     Route::get('/marks/create', [\App\Http\Controllers\TeacherController::class, 'marksCreate'])->name('marks.create');
     Route::post('/marks', [\App\Http\Controllers\TeacherController::class, 'marksStore'])->name('marks.store');
 });

@@ -17,7 +17,7 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
                 <div class="p-6 text-gray-900">
                     <h3 class="text-lg font-semibold mb-4">Add New Subject</h3>
-                    <form action="{{ route('admin.subjects.store') }}" method="POST" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                    <form action="{{ route('admin.subjects.store') }}" method="POST" class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
                         @csrf
                         <div>
                             <x-input-label for="name" value="Subject Name" />
@@ -32,6 +32,15 @@
                             <select id="type" name="type" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
                                 <option value="theory">Theory</option>
                                 <option value="practical">Practical</option>
+                            </select>
+                        </div>
+                        <div>
+                            <x-input-label for="class_id" value="Class" />
+                            <select id="class_id" name="class_id" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
+                                <option value="">Select Class</option>
+                                @foreach($classes as $class)
+                                    <option value="{{ $class->id }}">{{ $class->name }}</option>
+                                @endforeach
                             </select>
                         </div>
                         <div>
@@ -51,6 +60,7 @@
                                 <tr>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Code</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Class</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                                 </tr>
@@ -60,6 +70,7 @@
                                     <tr>
                                         <td class="px-6 py-4 whitespace-nowrap font-medium">{{ $subject->name }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap">{{ $subject->code }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">{{ $subject->school_class->name ?? 'N/A' }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap uppercase text-xs">{{ $subject->type }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                             <form action="{{ route('admin.subjects.destroy', $subject) }}" method="POST" onsubmit="return confirm('Delete this subject?');">

@@ -1,7 +1,15 @@
 <nav x-data="{ open: false }" class="bg-white border-r border-gray-100 w-64 min-h-screen flex-shrink-0 hidden md:flex flex-col transition-all duration-300">
     <!-- Logo -->
     <div class="h-16 flex items-center justify-center border-b border-gray-100">
-        <a href="{{ route('dashboard') }}" class="flex items-center gap-2">
+        @php
+            $dashboardRoute = Auth::user()->getDashboardRoute();
+            $isDashboardActive = request()->routeIs('dashboard') || 
+                                request()->routeIs('admin.dashboard') || 
+                                request()->routeIs('teacher.dashboard') || 
+                                request()->routeIs('student.dashboard') || 
+                                request()->routeIs('parent.dashboard');
+        @endphp
+        <a href="{{ route($dashboardRoute) }}" class="flex items-center gap-2">
             <x-application-logo class="block h-9 w-auto fill-current text-brand-600" />
             <span class="font-bold text-xl tracking-tight text-gray-800">Smart<span class="text-brand-600">School</span></span>
         </a>
@@ -12,7 +20,7 @@
         
         <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Menu</p>
 
-        <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors {{ request()->routeIs('dashboard') ? 'bg-brand-50 text-brand-700' : 'text-gray-600 hover:bg-gray-50' }}">
+        <x-nav-link :href="route($dashboardRoute)" :active="$isDashboardActive" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors {{ $isDashboardActive ? 'bg-brand-50 text-brand-700' : 'text-gray-600 hover:bg-gray-50' }}">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
             {{ __('Dashboard') }}
         </x-nav-link>
@@ -116,7 +124,7 @@
     <!-- Mobile Menu Overlay -->
      <div x-show="open" class="absolute top-16 left-0 w-full bg-white border-b border-gray-100 shadow-lg z-50 flex flex-col p-4" style="display: none;">
          <!-- Replicate links here or include a partial for mobile -->
-         <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+         <x-responsive-nav-link :href="route($dashboardRoute)" :active="$isDashboardActive">
             {{ __('Dashboard') }}
         </x-responsive-nav-link>
         <!-- Add other links similarly if needed for full mobile optimization -->

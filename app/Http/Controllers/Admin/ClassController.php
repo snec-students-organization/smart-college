@@ -55,4 +55,9 @@ class ClassController extends Controller
     {
         return response()->json($class->sections);
     }
+
+    public function getSubjects(SchoolClass $class)
+    {
+        return response()->json($class->subjects);
+    }
 }

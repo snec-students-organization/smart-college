@@ -10,8 +10,9 @@ class SubjectController extends Controller
 {
     public function index()
     {
-        $subjects = Subject::paginate(10);
-        return view('admin.academic.subjects', compact('subjects'));
+        $subjects = Subject::with('school_class')->paginate(10);
+        $classes = \App\Models\SchoolClass::all();
+        return view('admin.academic.subjects', compact('subjects', 'classes'));
     }
 
     public function store(Request $request)
@@ -20,6 +21,7 @@ class SubjectController extends Controller
             'name' => 'required|string',
             'code' => 'required|string|unique:subjects,code',
             'type' => 'required|in:theory,practical',
+            'class_id' => 'required|exists:classes,id',
         ]);
 
         Subject::create($request->all());

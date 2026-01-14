@@ -91,8 +91,7 @@ class TeacherController extends Controller
     public function marksIndex()
     {
         $classes = SchoolClass::with('sections')->get();
-        $subjects = Subject::all();
-        return view('teacher.marks.index', compact('classes', 'subjects'));
+        return view('teacher.marks.index', compact('classes'));
     }
 
     public function marksCreate(Request $request)
@@ -152,5 +151,35 @@ class TeacherController extends Controller
         }
 
         return redirect()->route('teacher.marks.index')->with('success', 'Marks entered successfully.');
+    }
+    public function marksList(Request $request)
+    {
+        $classes = SchoolClass::with('sections')->get();
+        
+        $query = \App\Models\Mark::with(['student.user', 'subject', 'student.school_class', 'student.section']);
+
+        if ($request->filled('class_id')) {
+            $query->whereHas('student', function($q) use ($request) {
+                $q->where('class_id', $request->class_id);
+            });
+        }
+
+        if ($request->filled('section_id')) {
+            $query->whereHas('student', function($q) use ($request) {
+                $q->where('section_id', $request->section_id);
+            });
+        }
+
+        if ($request->filled('subject_id')) {
+            $query->where('subject_id', $request->subject_id);
+        }
+
+        if ($request->filled('exam_type')) {
+            $query->where('exam_type', $request->exam_type);
+        }
+
+        $marks = $query->latest()->paginate(20);
+
+        return view('teacher.marks.list', compact('marks', 'classes'));
     }
 }

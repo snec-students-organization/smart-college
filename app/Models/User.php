@@ -71,4 +71,15 @@ class User extends Authenticatable
     {
         return $this->hasOne(ParentModel::class, 'user_id');
     }
+
+    public function getDashboardRoute()
+    {
+        return match($this->role) {
+            'admin' => 'admin.dashboard',
+            'teacher' => 'teacher.dashboard',
+            'student' => 'student.dashboard',
+            'parent' => 'parent.dashboard',
+            default => 'dashboard',
+        };
+    }
 }
