@@ -9,14 +9,12 @@ use App\Models\SchoolClass;
 use App\Models\Student;
 use App\Models\Attendance;
 use App\Models\Subject;
+use App\Models\Teacher;
 
 class TeacherController extends Controller
 {
     public function dashboard()
     {
-        // For simplicity, we assume a teacher sees global stats or could be linked to specific classes.
-        // In a real app, we'd filter by $user->teacher->classes
-        
         $stats = [
             'students' => Student::count(),
             'classes' => SchoolClass::count(),
@@ -25,7 +23,25 @@ class TeacherController extends Controller
             'subjects' => Subject::count(),
         ];
 
-        return view('teacher.dashboard', compact('stats'));
+        $teacher = Teacher::where('user_id', Auth::id())->first();
+
+        if (!$teacher) {
+            return view('teacher.dashboard', [
+                'error' => 'Teacher profile not found.',
+                'stats' => $stats,
+                'todayPeriods' => collect()
+            ]);
+        }
+
+        // Fetch Today's Handling Periods
+        $dayToday = date('l');
+        $todayPeriods = \App\Models\Timetable::with(['subject', 'section.school_class'])
+            ->where('teacher_id', $teacher->id)
+            ->where('day', $dayToday)
+            ->orderBy('period_number')
+            ->get();
+
+        return view('teacher.dashboard', compact('stats', 'todayPeriods'));
     }
 
     public function attendanceIndex()
@@ -181,5 +197,32 @@ class TeacherController extends Controller
         $marks = $query->latest()->paginate(20);
 
         return view('teacher.marks.list', compact('marks', 'classes'));
+    }
+
+    public function profile()
+    {
+        $teacher = Teacher::where('user_id', Auth::id())->first();
+        return view('teacher.profile', compact('teacher'));
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $teacher = Teacher::where('user_id', Auth::id())->first();
+
+        $validated = $request->validate([
+            'gender' => 'required|in:male,female,other',
+            'qualification' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string',
+            'dob' => 'nullable|date',
+        ]);
+
+        if ($teacher) {
+            $teacher->update($validated);
+        } else {
+            Teacher::create(array_merge($validated, ['user_id' => Auth::id()]));
+        }
+
+        return redirect()->route('teacher.dashboard')->with('success', 'Profile updated successfully.');
     }
 }

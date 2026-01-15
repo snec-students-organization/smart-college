@@ -56,6 +56,76 @@
                 </div>
             </div>
 
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                <!-- Today's Timetable -->
+                <div class="lg:col-span-2 bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6 text-gray-900">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-indigo-700">Today's Schedule ({{ date('l') }})</h3>
+                            <span class="text-xs font-medium px-2 py-1 bg-indigo-50 text-indigo-700 rounded-full">Section: {{ $student->school_class->name }} - {{ $student->section->name }}</span>
+                        </div>
+                        
+                        @if($timetable->isNotEmpty())
+                            <div class="relative">
+                                <div class="absolute top-0 bottom-0 left-4 w-0.5 bg-gray-100"></div>
+                                <div class="space-y-6 relative">
+                                    @foreach($timetable as $period)
+                                        <div class="flex items-start gap-4">
+                                            <div class="z-10 w-8 h-8 rounded-full bg-white border-2 border-indigo-500 flex items-center justify-center text-xs font-bold text-indigo-600">
+                                                {{ $period->period_number }}
+                                            </div>
+                                            <div class="flex-1 bg-gray-50 rounded-lg p-3 border border-gray-100 hover:border-indigo-200 transition-colors">
+                                                <div class="flex justify-between items-start">
+                                                    <h4 class="font-bold text-gray-900">{{ $period->subject->name }}</h4>
+                                                    <span class="text-xs font-medium text-gray-500 bg-white px-2 py-1 rounded border">
+                                                        {{ \Carbon\Carbon::parse($period->start_time)->format('h:i A') }}
+                                                    </span>
+                                                </div>
+                                                <div class="text-sm text-gray-600 mt-1">Teacher: {{ $period->teacher->user->name }}</div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @else
+                            <div class="text-center py-6 bg-gray-50 rounded-lg border border-dashed text-gray-500">
+                                <svg class="w-10 h-10 mx-auto mb-2 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <p>No periods scheduled for today.</p>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+
+                <!-- Class Teacher info -->
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6 text-gray-900">
+                         <h3 class="text-lg font-semibold mb-4 text-gray-800">Class Information</h3>
+                         <div class="space-y-4">
+                            <div class="p-4 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white">
+                                <div class="text-xs uppercase opacity-75 mb-1 font-semibold">Class Teacher</div>
+                                <div class="text-xl font-bold">{{ $student->section->class_teacher->user->name ?? 'Not Assigned' }}</div>
+                                @if($student->section->class_teacher)
+                                    <div class="text-xs mt-2 flex items-center gap-1">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                                        {{ $student->section->class_teacher->phone ?? 'Ask administration' }}
+                                    </div>
+                                @endif
+                            </div>
+
+                            <div class="flex items-center justify-between p-3 border rounded-lg">
+                                <span class="text-sm text-gray-600 font-medium">Classroom</span>
+                                <span class="text-sm font-bold text-gray-900">{{ $student->school_class->name }} - {{ $student->section->name }}</span>
+                            </div>
+
+                            <div class="flex items-center justify-between p-3 border rounded-lg">
+                                <span class="text-sm text-gray-600 font-medium">Total Students</span>
+                                <span class="text-sm font-bold text-gray-900">{{ $student->section->students->count() }}</span>
+                            </div>
+                         </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Recent Marks -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">

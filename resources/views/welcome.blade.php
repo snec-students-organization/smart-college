@@ -128,6 +128,132 @@
         </div>
     </div>
 
+    <!-- Live School Schedule Section -->
+    <div id="schedule" class="py-24 bg-white overflow-hidden relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+                <div>
+                    <span class="inline-flex items-center gap-2 py-1 px-3 rounded-full bg-brand-50 text-brand-700 text-xs font-bold uppercase tracking-widest mb-4 border border-brand-100">
+                        <span class="relative flex h-2 w-2">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-brand-500"></span>
+                        </span>
+                        Real-time Campus Pulse
+                    </span>
+                    <h2 class="text-4xl md:text-5xl font-black text-gray-900 tracking-tight">Today's <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-accent-500">Live Schedule</span></h2>
+                </div>
+                <div class="flex flex-col items-end">
+                    <div class="text-3xl font-bold text-gray-900" id="current-time-display">{{ now()->format('h:i') }} <span class="text-lg font-medium text-gray-500" id="current-period-display">{{ now()->format('A') }}</span></div>
+                    <div class="text-sm font-semibold text-brand-600 uppercase tracking-widest">{{ $dayToday }}</div>
+                </div>
+            </div>
+
+            <script>
+                function updateClock() {
+                    const now = new Date();
+                    const optionsTime = { hour: '2-digit', minute: '2-digit', hour12: false };
+                    const optionsPeriod = { hour12: true, hour: 'numeric' };
+                    
+                    let hours = now.getHours();
+                    let minutes = now.getMinutes();
+                    let ampm = hours >= 12 ? 'PM' : 'AM';
+                    hours = hours % 12;
+                    hours = hours ? hours : 12; // the hour '0' should be '12'
+                    minutes = minutes < 10 ? '0'+minutes : minutes;
+                    let strTime = hours + ':' + minutes;
+                    
+                    document.getElementById('current-time-display').childNodes[0].nodeValue = strTime + ' ';
+                    document.getElementById('current-period-display').innerText = ampm;
+                }
+                setInterval(updateClock, 1000);
+            </script>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                @foreach($sections as $section)
+                    @php
+                        $activePeriod = $section->timetables->first(function($p) {
+                            $now = now()->format('H:i:s');
+                            return $now >= $p->start_time && $now <= $p->end_time;
+                        });
+                    @endphp
+                    <div class="group relative">
+                        <!-- Card Glow Backdrop (visible on active or hover) -->
+                        <div class="absolute -inset-0.5 bg-gradient-to-r {{ $activePeriod ? 'from-brand-500 to-accent-400 opacity-30 blur-xl animate-pulse' : 'from-gray-200 to-gray-100 opacity-0 group-hover:opacity-20' }} rounded-[2.5rem] transition duration-1000"></div>
+                        
+                        <div class="relative bg-white border border-gray-100 rounded-[2.5rem] p-8 shadow-2xl shadow-gray-200/40 hover:shadow-brand-500/10 transition-all duration-500 flex flex-col h-full">
+                            <div class="flex justify-between items-start mb-8">
+                                <div>
+                                    <h3 class="text-2xl font-black text-gray-900 leading-none mb-2">{{ $section->school_class->name }}</h3>
+                                    <div class="inline-flex items-center px-2 py-1 bg-gray-100 rounded-lg text-[10px] font-bold text-gray-500 uppercase tracking-tighter">Section {{ $section->name }}</div>
+                                </div>
+                                @if($activePeriod)
+                                    <div class="flex items-center gap-1.5 px-3 py-1.5 bg-brand-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest animate-bounce shadow-lg shadow-brand-500/40">
+                                        <div class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></div>
+                                        Live Now
+                                    </div>
+                                @endif
+                            </div>
+
+                            <!-- Class Teacher Widget -->
+                            <div class="mb-8 p-5 bg-gradient-to-br from-gray-50 to-white border border-gray-100 rounded-3xl group-hover:border-brand-100 transition-colors">
+                                <div class="text-[9px] uppercase text-gray-400 font-extrabold mb-3 tracking-[0.2em]">Class Mentor</div>
+                                <div class="flex items-center gap-4">
+                                    <div class="relative">
+                                        <div class="w-12 h-12 rounded-2xl bg-brand-100 flex items-center justify-center text-brand-700 font-black text-xl">
+                                            {{ substr($section->class_teacher->user->name ?? '?', 0, 1) }}
+                                        </div>
+                                        <div class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-green-500 border-2 border-white"></div>
+                                    </div>
+                                    <div>
+                                        <div class="font-black text-gray-900 text-sm tracking-tight">{{ $section->class_teacher->user->name ?? 'Not Assigned' }}</div>
+                                        <div class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Primary Instructor</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Timeline -->
+                            <div class="space-y-3 flex-1">
+                               @if($section->timetables->count() > 0)
+                                    @foreach($section->timetables as $period)
+                                        @php
+                                            $isCurrent = $activePeriod && $activePeriod->id === $period->id;
+                                        @endphp
+                                        <div class="relative pl-6 py-2 border-l-2 {{ $isCurrent ? 'border-brand-500' : 'border-gray-100' }} transition-colors">
+                                            <!-- Dot -->
+                                            <div class="absolute -left-[5px] top-1/2 -translate-y-1/2 w-2 h-2 rounded-full {{ $isCurrent ? 'bg-brand-600 ring-4 ring-brand-100' : 'bg-gray-200' }}"></div>
+                                            
+                                            <div class="flex items-center justify-between gap-4">
+                                                <div class="min-w-0">
+                                                    <div class="flex items-center gap-2">
+                                                        <span class="text-[10px] font-black {{ $isCurrent ? 'text-brand-600' : 'text-gray-400' }}">P{{ $period->period_number }}</span>
+                                                        <h4 class="text-sm font-black {{ $isCurrent ? 'text-gray-900' : 'text-gray-600' }} truncate tracking-tight">{{ $period->subject->name }}</h4>
+                                                    </div>
+                                                    <div class="text-[10px] {{ $isCurrent ? 'text-gray-600' : 'text-gray-400' }} font-bold mt-0.5">{{ $period->teacher->user->name }}</div>
+                                                </div>
+                                                <div class="text-right flex-shrink-0">
+                                                    <div class="text-[10px] font-black {{ $isCurrent ? 'text-brand-600' : 'text-gray-900' }}">{{ \Carbon\Carbon::parse($period->start_time)->format('h:i') }}</div>
+                                                    <div class="text-[8px] font-bold text-gray-400 uppercase">{{ \Carbon\Carbon::parse($period->start_time)->format('A') }}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <div class="h-32 flex items-center justify-center rounded-3xl border-2 border-dashed border-gray-100">
+                                        <p class="text-xs text-gray-400 font-bold uppercase tracking-widest italic text-center">No Active<br>Periods Today</p>
+                                    </div>
+                                @endif
+                            </div>
+
+                            <button class="mt-8 w-full py-4 rounded-2xl bg-gray-50 text-gray-600 font-black text-xs uppercase tracking-widest hover:bg-brand-600 hover:text-white transition-all duration-300">
+                                View Full Details
+                            </button>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+
     <footer class="bg-gray-900 text-white py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
             <div class="mb-6 md:mb-0">

@@ -15,10 +15,18 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::paginate(10);
-        return view('admin.users.index', compact('users'));
+        $query = User::query();
+
+        if ($request->filled('role')) {
+            $query->where('role', $request->role);
+        }
+
+        $users = $query->latest()->paginate(10)->withQueryString();
+        $selected_role = $request->role;
+
+        return view('admin.users.index', compact('users', 'selected_role'));
     }
 
     /**

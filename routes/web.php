@@ -3,9 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [\App\Http\Controllers\HomeController::class, 'index']);
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -54,6 +52,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('fees/collect', [\App\Http\Controllers\Admin\FeeController::class, 'collectionIndex'])->name('fees.collect.index');
     Route::get('fees/student-fees', [\App\Http\Controllers\Admin\FeeController::class, 'collectShow'])->name('fees.collect.show');
     Route::post('fees/payment', [\App\Http\Controllers\Admin\FeeController::class, 'storePayment'])->name('fees.payment.store');
+
+    // Timetable Management
+    Route::resource('timetable', \App\Http\Controllers\Admin\TimetableController::class);
+    Route::post('timetable/assign-teacher', [\App\Http\Controllers\Admin\TimetableController::class, 'assignClassTeacher'])->name('timetable.assign-teacher');
 });
 
 // Teacher Routes
@@ -70,6 +72,10 @@ Route::middleware(['auth', 'role:teacher'])->prefix('teacher')->name('teacher.')
     Route::get('/marks/list', [\App\Http\Controllers\TeacherController::class, 'marksList'])->name('marks.list');
     Route::get('/marks/create', [\App\Http\Controllers\TeacherController::class, 'marksCreate'])->name('marks.create');
     Route::post('/marks', [\App\Http\Controllers\TeacherController::class, 'marksStore'])->name('marks.store');
+
+    // Profile Setup
+    Route::get('/profile-setup', [\App\Http\Controllers\TeacherController::class, 'profile'])->name('profile.setup');
+    Route::post('/profile-setup', [\App\Http\Controllers\TeacherController::class, 'updateProfile'])->name('profile.update');
 });
 
 // Student Routes

@@ -26,4 +26,14 @@ class Teacher extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function sections()
+    {
+        return $this->hasMany(Section::class, 'class_teacher_id');
+    }
+
+    public function timetables()
+    {
+        return $this->hasMany(Timetable::class);
+    }
 }

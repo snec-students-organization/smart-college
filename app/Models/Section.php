@@ -9,7 +9,17 @@ class Section extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'class_id'];
+    protected $fillable = ['name', 'class_id', 'class_teacher_id'];
+
+    public function class_teacher()
+    {
+        return $this->belongsTo(Teacher::class, 'class_teacher_id');
+    }
+
+    public function timetables()
+    {
+        return $this->hasMany(Timetable::class);
+    }
 
     public function school_class()
     {

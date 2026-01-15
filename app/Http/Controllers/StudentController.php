@@ -35,7 +35,18 @@ class StudentController extends Controller
                             ->take(5)
                             ->get();
 
-        return view('student.dashboard', compact('student', 'attendancePercentage', 'pendingBooks', 'recentMarks'));
+        // Fetch Today's Timetable
+        $dayToday = date('l');
+        $timetable = \App\Models\Timetable::with(['subject', 'teacher.user'])
+            ->where('section_id', $student->section_id)
+            ->where('day', $dayToday)
+            ->orderBy('period_number')
+            ->get();
+
+        // Load class teacher
+        $student->load(['school_class', 'section.class_teacher.user']);
+
+        return view('student.dashboard', compact('student', 'attendancePercentage', 'pendingBooks', 'recentMarks', 'timetable'));
     }
 
     public function attendance()
