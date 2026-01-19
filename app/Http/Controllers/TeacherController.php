@@ -10,6 +10,9 @@ use App\Models\Student;
 use App\Models\Attendance;
 use App\Models\Subject;
 use App\Models\Teacher;
+use App\Models\TeacherNotification;
+use App\Models\FeePayment;
+use App\Models\Fee;
 
 class TeacherController extends Controller
 {
@@ -19,7 +22,7 @@ class TeacherController extends Controller
             'students' => Student::count(),
             'classes' => SchoolClass::count(),
             'attendance_today' => Attendance::where('date', date('Y-m-d'))
-                                    ->where('status', 'present')->count(),
+                ->where('status', 'present')->count(),
             'subjects' => Subject::count(),
         ];
 
@@ -41,7 +44,13 @@ class TeacherController extends Controller
             ->orderBy('period_number')
             ->get();
 
-        return view('teacher.dashboard', compact('stats', 'todayPeriods'));
+        // Fetch Notifications
+        $notifications = TeacherNotification::where('teacher_id', $teacher->id)
+            ->latest()
+            ->take(10) // Limit to recent 10
+            ->get();
+
+        return view('teacher.dashboard', compact('stats', 'todayPeriods', 'notifications'));
     }
 
     public function attendanceIndex()
@@ -63,15 +72,15 @@ class TeacherController extends Controller
         $date = $request->date;
 
         $students = Student::where('class_id', $class->id)
-                            ->where('section_id', $section->id)
-                            ->get();
+            ->where('section_id', $section->id)
+            ->get();
 
         // Check if attendance already exists
         $attendance = Attendance::where('class_id', $class->id)
-                                ->where('section_id', $section->id)
-                                ->where('date', $date)
-                                ->get()
-                                ->keyBy('student_id');
+            ->where('section_id', $section->id)
+            ->where('date', $date)
+            ->get()
+            ->keyBy('student_id');
 
         return view('teacher.attendance.create', compact('class', 'section', 'date', 'students', 'attendance'));
     }
@@ -89,7 +98,7 @@ class TeacherController extends Controller
         foreach ($request->attendance as $studentId => $status) {
             Attendance::updateOrCreate(
                 [
-                    'student_id' => $studentId, 
+                    'student_id' => $studentId,
                     'date' => $request->date
                 ],
                 [
@@ -125,14 +134,14 @@ class TeacherController extends Controller
         $examType = $request->exam_type;
 
         $students = Student::where('class_id', $class->id)
-                            ->where('section_id', $section->id)
-                            ->get();
+            ->where('section_id', $section->id)
+            ->get();
 
         $marks = \App\Models\Mark::where('subject_id', $subject->id)
-                                ->where('exam_type', $examType)
-                                ->whereIn('student_id', $students->pluck('id'))
-                                ->get()
-                                ->keyBy('student_id');
+            ->where('exam_type', $examType)
+            ->whereIn('student_id', $students->pluck('id'))
+            ->get()
+            ->keyBy('student_id');
 
         return view('teacher.marks.create', compact('class', 'section', 'subject', 'examType', 'students', 'marks'));
     }
@@ -153,7 +162,7 @@ class TeacherController extends Controller
             if ($obtained !== null) {
                 \App\Models\Mark::updateOrCreate(
                     [
-                        'student_id' => $studentId, 
+                        'student_id' => $studentId,
                         'subject_id' => $request->subject_id,
                         'exam_type' => $request->exam_type,
                     ],
@@ -171,17 +180,17 @@ class TeacherController extends Controller
     public function marksList(Request $request)
     {
         $classes = SchoolClass::with('sections')->get();
-        
+
         $query = \App\Models\Mark::with(['student.user', 'subject', 'student.school_class', 'student.section']);
 
         if ($request->filled('class_id')) {
-            $query->whereHas('student', function($q) use ($request) {
+            $query->whereHas('student', function ($q) use ($request) {
                 $q->where('class_id', $request->class_id);
             });
         }
 
         if ($request->filled('section_id')) {
-            $query->whereHas('student', function($q) use ($request) {
+            $query->whereHas('student', function ($q) use ($request) {
                 $q->where('section_id', $request->section_id);
             });
         }
@@ -224,5 +233,34 @@ class TeacherController extends Controller
         }
 
         return redirect()->route('teacher.dashboard')->with('success', 'Profile updated successfully.');
+    }
+
+    public function markFeePaid(Request $request)
+    {
+        $request->validate([
+            'student_id' => 'required|exists:students,id',
+            'fee_id' => 'required|exists:fees,id',
+        ]);
+
+        $fee = Fee::findOrFail($request->fee_id);
+
+        FeePayment::firstOrCreate(
+            [
+                'student_id' => $request->student_id,
+                'fee_id' => $request->fee_id,
+            ],
+            [
+                'amount_paid' => $fee->amount,
+                'payment_date' => now(),
+                'status' => 'paid',
+                'transaction_id' => 'MANUAL-' . strtoupper(uniqid()),
+            ]
+        );
+
+        if ($request->wantsJson()) {
+            return response()->json(['message' => 'Student marked as paid.']);
+        }
+
+        return redirect()->back()->with('success', 'Student marked as paid.');
     }
 }

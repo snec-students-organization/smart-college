@@ -19,7 +19,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\AdminController::class, 'dashboard'])->name('dashboard');
     Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
-    
+
     // Academic Management
     Route::resource('students', \App\Http\Controllers\Admin\StudentController::class);
     Route::get('classes', [\App\Http\Controllers\Admin\ClassController::class, 'index'])->name('classes.index');
@@ -38,7 +38,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('library/books', [\App\Http\Controllers\Admin\LibraryController::class, 'index'])->name('library.index');
     Route::post('library/books', [\App\Http\Controllers\Admin\LibraryController::class, 'store'])->name('library.store');
     Route::delete('library/books/{book}', [\App\Http\Controllers\Admin\LibraryController::class, 'destroy'])->name('library.destroy');
-    
+
     Route::get('library/circulation', [\App\Http\Controllers\Admin\LibraryController::class, 'circulationIndex'])->name('library.circulation');
     Route::get('library/issue', [\App\Http\Controllers\Admin\LibraryController::class, 'issueBookCreate'])->name('library.issue.create');
     Route::post('library/issue', [\App\Http\Controllers\Admin\LibraryController::class, 'issueBookStore'])->name('library.issue.store');
@@ -48,6 +48,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('fees', [\App\Http\Controllers\Admin\FeeController::class, 'index'])->name('fees.index');
     Route::post('fees', [\App\Http\Controllers\Admin\FeeController::class, 'store'])->name('fees.store');
     Route::delete('fees/{fee}', [\App\Http\Controllers\Admin\FeeController::class, 'destroy'])->name('fees.destroy');
+    Route::get('fees/{fee}/status', [\App\Http\Controllers\Admin\FeeController::class, 'status'])->name('fees.status');
+    Route::get('fees/{fee}/export-excel', [\App\Http\Controllers\Admin\FeeController::class, 'exportExcel'])->name('fees.export.excel');
+    Route::get('fees/{fee}/export-pdf', [\App\Http\Controllers\Admin\FeeController::class, 'exportPdf'])->name('fees.export.pdf');
 
     Route::get('fees/collect', [\App\Http\Controllers\Admin\FeeController::class, 'collectionIndex'])->name('fees.collect.index');
     Route::get('fees/student-fees', [\App\Http\Controllers\Admin\FeeController::class, 'collectShow'])->name('fees.collect.show');
@@ -61,7 +64,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 // Teacher Routes
 Route::middleware(['auth', 'role:teacher'])->prefix('teacher')->name('teacher.')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\TeacherController::class, 'dashboard'])->name('dashboard');
-    
+
     // Attendance
     Route::get('/attendance', [\App\Http\Controllers\TeacherController::class, 'attendanceIndex'])->name('attendance.index');
     Route::get('/attendance/create', [\App\Http\Controllers\TeacherController::class, 'attendanceCreate'])->name('attendance.create');
@@ -76,6 +79,9 @@ Route::middleware(['auth', 'role:teacher'])->prefix('teacher')->name('teacher.')
     // Profile Setup
     Route::get('/profile-setup', [\App\Http\Controllers\TeacherController::class, 'profile'])->name('profile.setup');
     Route::post('/profile-setup', [\App\Http\Controllers\TeacherController::class, 'updateProfile'])->name('profile.update');
+
+    // Fee Management
+    Route::post('/fee/mark-paid', [\App\Http\Controllers\TeacherController::class, 'markFeePaid'])->name('fee.mark-paid');
 });
 
 // Student Routes
@@ -97,4 +103,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
