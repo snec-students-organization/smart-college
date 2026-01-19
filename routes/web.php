@@ -59,6 +59,12 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     // Timetable Management
     Route::resource('timetable', \App\Http\Controllers\Admin\TimetableController::class);
     Route::post('timetable/assign-teacher', [\App\Http\Controllers\Admin\TimetableController::class, 'assignClassTeacher'])->name('timetable.assign-teacher');
+
+    // Attendance Management
+    Route::get('attendance/report/export-excel', [\App\Http\Controllers\Admin\AttendanceController::class, 'exportExcel'])->name('attendance.report.excel');
+    Route::get('attendance/report/export-pdf', [\App\Http\Controllers\Admin\AttendanceController::class, 'exportPdf'])->name('attendance.report.pdf');
+    Route::get('attendance/report', [\App\Http\Controllers\Admin\AttendanceController::class, 'report'])->name('attendance.report');
+    Route::get('attendance', [\App\Http\Controllers\Admin\AttendanceController::class, 'index'])->name('attendance.index');
 });
 
 // Teacher Routes
