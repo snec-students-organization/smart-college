@@ -60,6 +60,13 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::resource('timetable', \App\Http\Controllers\Admin\TimetableController::class);
     Route::post('timetable/assign-teacher', [\App\Http\Controllers\Admin\TimetableController::class, 'assignClassTeacher'])->name('timetable.assign-teacher');
 
+    // Teacher Attendance
+    Route::get('attendance/teachers/report/export-excel', [\App\Http\Controllers\Admin\TeacherAttendanceController::class, 'exportExcel'])->name('attendance.teachers.report.excel');
+    Route::get('attendance/teachers/report/export-pdf', [\App\Http\Controllers\Admin\TeacherAttendanceController::class, 'exportPdf'])->name('attendance.teachers.report.pdf');
+    Route::get('attendance/teachers/report', [\App\Http\Controllers\Admin\TeacherAttendanceController::class, 'report'])->name('attendance.teachers.report');
+    Route::get('attendance/teachers', [\App\Http\Controllers\Admin\TeacherAttendanceController::class, 'index'])->name('attendance.teachers.index');
+    Route::post('attendance/teachers', [\App\Http\Controllers\Admin\TeacherAttendanceController::class, 'store'])->name('attendance.teachers.store');
+
     // Attendance Management
     Route::get('attendance/report/export-excel', [\App\Http\Controllers\Admin\AttendanceController::class, 'exportExcel'])->name('attendance.report.excel');
     Route::get('attendance/report/export-pdf', [\App\Http\Controllers\Admin\AttendanceController::class, 'exportPdf'])->name('attendance.report.pdf');
