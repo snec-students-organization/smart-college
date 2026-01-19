@@ -7,7 +7,7 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            
+
             @if(session('success'))
                 <div class="mb-4 p-4 bg-green-100 text-green-700 rounded-md">
                     {{ session('success') }}
@@ -18,7 +18,8 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
                 <div class="p-6 text-gray-900">
                     <h3 class="text-lg font-semibold mb-4">Add New Book</h3>
-                    <form action="{{ route('admin.library.store') }}" method="POST" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 items-end">
+                    <form action="{{ route('admin.library.store') }}" method="POST"
+                        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 items-end">
                         @csrf
                         <div class="lg:col-span-2">
                             <x-input-label for="title" value="Book Title" />
@@ -28,19 +29,16 @@
                             <x-input-label for="author" value="Author" />
                             <x-text-input id="author" name="author" class="block mt-1 w-full" required />
                         </div>
-                         <div class="lg:col-span-1">
+                        <div class="lg:col-span-1">
                             <x-input-label for="book_number" value="Book Number" />
                             <x-text-input id="book_number" name="book_number" class="block mt-1 w-full" />
                         </div>
                         <div class="lg:col-span-1">
-                            <x-input-label for="price" value="Price" />
-                            <x-text-input id="price" type="number" step="0.01" name="price" class="block mt-1 w-full" required />
+                            <x-input-label for="quantity" value="Qty" />
+                            <x-text-input id="quantity" type="number" name="quantity" class="block mt-1 w-full" min="1"
+                                value="1" required />
                         </div>
                         <div class="lg:col-span-1">
-                            <x-input-label for="quantity" value="Qty" />
-                            <x-text-input id="quantity" type="number" name="quantity" class="block mt-1 w-full" min="1" value="1" required />
-                        </div>
-                         <div class="lg:col-span-1">
                             <x-primary-button class="w-full justify-center">Add</x-primary-button>
                         </div>
                     </form>
@@ -52,20 +50,34 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <div class="flex justify-between items-center mb-4">
-                         <h3 class="text-lg font-semibold">Book Inventory</h3>
-                         <a href="{{ route('admin.library.circulation') }}" class="text-indigo-600 hover:text-indigo-900">Go to Circulation &rarr;</a>
+                        <h3 class="text-lg font-semibold">Book Inventory</h3>
+                        <div class="flex gap-4">
+                            <a href="{{ route('admin.library.history') }}"
+                                class="text-indigo-600 hover:text-indigo-900">Book History</a>
+                            <a href="{{ route('admin.library.circulation') }}"
+                                class="text-indigo-600 hover:text-indigo-900">Go to Circulation &rarr;</a>
+                        </div>
                     </div>
-                   
+
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Author</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Book Number</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Qty</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Title</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Author</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Book Number</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Qty</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Actions</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
@@ -73,14 +85,17 @@
                                     <tr>
                                         <td class="px-6 py-4 whitespace-nowrap font-medium">{{ $book->title }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap">{{ $book->author }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $book->book_number ?? '-' }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ number_format($book->price, 2) }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {{ $book->book_number ?? '-' }}
+                                        </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm">{{ $book->quantity }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                            <form action="{{ route('admin.library.destroy', $book) }}" method="POST" onsubmit="return confirm('Delete this book?');">
+                                            <form action="{{ route('admin.library.destroy', $book) }}" method="POST"
+                                                onsubmit="return confirm('Delete this book?');">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="text-red-600 hover:text-red-900">Delete</button>
+                                                <button type="submit"
+                                                    class="text-red-600 hover:text-red-900">Delete</button>
                                             </form>
                                         </td>
                                     </tr>

@@ -25,7 +25,6 @@ class LibraryController extends Controller
             'title' => 'required|string',
             'author' => 'required|string',
             'book_number' => 'nullable|string|unique:books,book_number',
-            'price' => 'required|numeric|min:0',
             'quantity' => 'required|integer|min:1',
             'rack_no' => 'nullable|string',
         ]);
@@ -45,24 +44,37 @@ class LibraryController extends Controller
     public function circulationIndex(Request $request)
     {
         $issues = BookIssue::with(['book', 'student.user', 'student.school_class'])
-                            ->whereNull('return_date')
-                            ->orderBy('due_date', 'asc')
-                            ->paginate(15);
-        
+            ->whereNull('return_date')
+            ->orderBy('due_date', 'asc')
+            ->paginate(15);
+
         $classes = SchoolClass::all();
 
         return view('admin.library.circulation', compact('issues', 'classes'));
     }
 
-    public function issueBookCreate() {
-        $books = Book::withCount(['book_issues as active_issues_count' => function ($query) {
-            $query->whereNull('return_date');
-        }])->where('quantity', '>', 0)->get();
+    public function history(Request $request)
+    {
+        $history = BookIssue::with(['book', 'student.user', 'student.school_class'])
+            ->orderBy('issue_date', 'desc')
+            ->paginate(20);
+
+        return view('admin.library.history', compact('history'));
+    }
+
+    public function issueBookCreate()
+    {
+        $books = Book::withCount([
+            'book_issues as active_issues_count' => function ($query) {
+                $query->whereNull('return_date');
+            }
+        ])->where('quantity', '>', 0)->get();
         $classes = SchoolClass::with('sections')->get();
         return view('admin.library.issue_create', compact('books', 'classes'));
     }
 
-    public function issueBookStore(Request $request) {
+    public function issueBookStore(Request $request)
+    {
         $request->validate([
             'book_id' => 'required|exists:books,id',
             'student_id' => 'required|exists:students,id',
@@ -93,7 +105,7 @@ class LibraryController extends Controller
             'return_date' => now(),
             'status' => 'returned',
             // Fine calculation logic could go here
-            'fine' => 0 
+            'fine' => 0
         ]);
 
         return redirect()->back()->with('success', 'Book returned successfully.');

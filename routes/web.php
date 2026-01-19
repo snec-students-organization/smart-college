@@ -39,6 +39,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::post('library/books', [\App\Http\Controllers\Admin\LibraryController::class, 'store'])->name('library.store');
     Route::delete('library/books/{book}', [\App\Http\Controllers\Admin\LibraryController::class, 'destroy'])->name('library.destroy');
 
+    Route::get('library/history', [\App\Http\Controllers\Admin\LibraryController::class, 'history'])->name('library.history');
     Route::get('library/circulation', [\App\Http\Controllers\Admin\LibraryController::class, 'circulationIndex'])->name('library.circulation');
     Route::get('library/issue', [\App\Http\Controllers\Admin\LibraryController::class, 'issueBookCreate'])->name('library.issue.create');
     Route::post('library/issue', [\App\Http\Controllers\Admin\LibraryController::class, 'issueBookStore'])->name('library.issue.store');

@@ -7,7 +7,7 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-             @if(session('success'))
+            @if(session('success'))
                 <div class="mb-4 p-4 bg-green-100 text-green-700 rounded-md">
                     {{ session('success') }}
                 </div>
@@ -16,19 +16,34 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-lg font-semibold">Currently Issued Books</h3>
-                        <a href="{{ route('admin.library.issue.create') }}" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Issue New Book</a>
+                        <div class="flex items-center gap-4">
+                            <h3 class="text-lg font-semibold">Currently Issued Books</h3>
+                            <a href="{{ route('admin.library.history') }}"
+                                class="text-sm text-indigo-600 hover:text-indigo-900">View History</a>
+                        </div>
+                        <a href="{{ route('admin.library.issue.create') }}"
+                            class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Issue New Book</a>
                     </div>
-                    
+
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Book</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Issue Date</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Due Date</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Book</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Student</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Issue Date</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Due Date</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Actions</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
@@ -36,18 +51,30 @@
                                     <tr>
                                         <td class="px-6 py-4 whitespace-nowrap font-medium">{{ $issue->book->title }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            {{ $issue->student->user->name }} <br>
-                                            <span class="text-xs text-gray-500">{{ $issue->student->school_class->name }} - {{ $issue->student->section->name }}</span>
+                                            @if($issue->student && $issue->student->user)
+                                                {{ $issue->student->user->name }} <br>
+                                                <span class="text-xs text-gray-500">
+                                                    {{ optional($issue->student->school_class)->name ?? '-' }} -
+                                                    {{ optional($issue->student->section)->name ?? '-' }}
+                                                </span>
+                                            @else
+                                                <span class="text-red-500 italic">Student Unavailable</span>
+                                            @endif
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $issue->issue_date->format('d M Y') }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm 
-                                            {{ $issue->due_date->isPast() ? 'text-red-600 font-bold' : 'text-gray-500' }}">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {{ $issue->issue_date->format('d M Y') }}
+                                        </td>
+                                        <td
+                                            class="px-6 py-4 whitespace-nowrap text-sm 
+                                                    {{ $issue->due_date->isPast() ? 'text-red-600 font-bold' : 'text-gray-500' }}">
                                             {{ $issue->due_date->format('d M Y') }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                            <form action="{{ route('admin.library.return', $issue) }}" method="POST" onsubmit="return confirm('Return this book?');">
+                                            <form action="{{ route('admin.library.return', $issue) }}" method="POST"
+                                                onsubmit="return confirm('Return this book?');">
                                                 @csrf
-                                                <button type="submit" class="text-green-600 hover:text-green-900">Mark Returned</button>
+                                                <button type="submit" class="text-green-600 hover:text-green-900">Mark
+                                                    Returned</button>
                                             </form>
                                         </td>
                                     </tr>

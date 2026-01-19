@@ -14,7 +14,6 @@ class Book extends Model
         'author',
         'book_number',
         'quantity',
-        'price',
         'rack_no',
     ];
 
