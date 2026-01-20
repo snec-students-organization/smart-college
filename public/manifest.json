@@ -1,7 +1,7 @@
 {
-    "name": "Smart College",
-    "short_name": "SmartCollege",
-    "description": "Smart College Management System",
+    "name": "EduConnect",
+    "short_name": "EduConnect",
+    "description": "EduConnect Management System",
     "start_url": "/",
     "display": "standalone",
     "background_color": "#ffffff",

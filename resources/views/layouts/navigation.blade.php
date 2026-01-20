@@ -16,8 +16,8 @@
                 class="w-10 h-10 bg-brand-600 rounded-xl flex items-center justify-center shadow-lg shadow-brand-600/20">
                 <x-application-logo class="w-7 h-7 fill-white" />
             </div>
-            <span class="font-bold text-xl tracking-tight text-gray-900">Smart<span
-                    class="text-brand-600">College</span></span>
+            <span class="font-bold text-xl tracking-tight text-gray-900">Edu<span
+                    class="text-brand-600">Connect</span></span>
         </a>
     </div>
 
@@ -166,8 +166,8 @@
             <div class="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center">
                 <x-application-logo class="w-5 h-5 fill-white" />
             </div>
-            <span class="font-bold text-lg text-gray-900 tracking-tight">Smart<span
-                    class="text-brand-600">College</span></span>
+            <span class="font-bold text-lg text-gray-900 tracking-tight">Edu<span
+                    class="text-brand-600">Connect</span></span>
         </a>
         <button @click="open = !open"
             class="p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors focus:outline-none">
