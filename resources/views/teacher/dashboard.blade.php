@@ -16,31 +16,48 @@
                 </div>
             @endif
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-                <!-- Total Students -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border-l-4 border-indigo-500">
-                    <div class="text-gray-500 text-sm font-medium uppercase">Total Students</div>
-                    <div class="mt-2 text-3xl font-bold text-gray-900">{{ $stats['students'] }}</div>
-                </div>
+            @if($isMentor)
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    <!-- Mentored Students -->
+                    <div class="bg-white/80 backdrop-blur-xl rounded-2xl p-6 border border-indigo-100 shadow-soft hover:shadow-lg transition-all duration-300">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest leading-none mb-1">My Students</p>
+                                <h3 class="text-2xl font-black text-gray-900">{{ $stats['mentor_students'] }}</h3>
+                            </div>
+                        </div>
+                    </div>
 
-                <!-- Classes -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border-l-4 border-blue-500">
-                    <div class="text-gray-500 text-sm font-medium uppercase">Total Classes</div>
-                    <div class="mt-2 text-3xl font-bold text-gray-900">{{ $stats['classes'] }}</div>
-                </div>
+                    <!-- Mentored Subjects -->
+                    <div class="bg-white/80 backdrop-blur-xl rounded-2xl p-6 border border-blue-100 shadow-soft hover:shadow-lg transition-all duration-300">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-bold text-blue-400 uppercase tracking-widest leading-none mb-1">Class Subjects</p>
+                                <h3 class="text-2xl font-black text-gray-900">{{ $stats['mentor_subjects'] }}</h3>
+                            </div>
+                        </div>
+                    </div>
 
-                <!-- Attendance Today -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border-l-4 border-green-500">
-                    <div class="text-gray-500 text-sm font-medium uppercase">Present Today</div>
-                    <div class="mt-2 text-3xl font-bold text-gray-900">{{ $stats['attendance_today'] }}</div>
+                    <!-- Attendance Today -->
+                    <div class="bg-white/80 backdrop-blur-xl rounded-2xl p-6 border border-emerald-100 shadow-soft hover:shadow-lg transition-all duration-300">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </div>
+                            <div>
+                                <p class="text-[10px] font-bold text-emerald-400 uppercase tracking-widest leading-none mb-1">Present Today</p>
+                                <h3 class="text-2xl font-black text-gray-900">{{ $stats['attendance_today'] }}</h3>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
-                <!-- Subjects -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border-l-4 border-purple-500">
-                    <div class="text-gray-500 text-sm font-medium uppercase">Subjects</div>
-                    <div class="mt-2 text-3xl font-bold text-gray-900">{{ $stats['subjects'] }}</div>
-                </div>
-            </div>
+            @endif
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Quick Actions -->
@@ -51,9 +68,9 @@
                             <a href="{{ route('teacher.attendance.index') }}" class="block w-full text-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
                                 Mark Attendance
                             </a>
-                            <button class="block w-full text-center px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300">
-                                Enter Marks (Coming Soon)
-                            </button>
+                            <a href="{{ route('teacher.marks.index') }}" class="block w-full text-center px-4 py-2 bg-brand-600 text-white rounded-md hover:bg-brand-700">
+                                Enter Marks
+                            </a>
                         </div>
                     </div>
                 </div>

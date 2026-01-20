@@ -18,22 +18,36 @@ class TeacherController extends Controller
 {
     public function dashboard()
     {
-        $stats = [
-            'students' => Student::count(),
-            'classes' => SchoolClass::count(),
-            'attendance_today' => Attendance::where('date', date('Y-m-d'))
-                ->where('status', 'present')->count(),
-            'subjects' => Subject::count(),
-        ];
-
-        $teacher = Teacher::where('user_id', Auth::id())->first();
+        $user = Auth::user();
+        $teacher = Teacher::where('user_id', $user->id)->first();
 
         if (!$teacher) {
             return view('teacher.dashboard', [
                 'error' => 'Teacher profile not found.',
-                'stats' => $stats,
-                'todayPeriods' => collect()
+                'stats' => [],
+                'todayPeriods' => collect(),
+                'notifications' => collect(),
+                'isMentor' => false
             ]);
+        }
+
+        // Mentor logic
+        $moderatedSections = \App\Models\Section::where('class_teacher_id', $teacher->id)->get();
+        $isMentor = $moderatedSections->isNotEmpty();
+        $stats = [];
+
+        if ($isMentor) {
+            $sectionIds = $moderatedSections->pluck('id');
+            $classIds = $moderatedSections->pluck('class_id')->unique();
+
+            $stats = [
+                'mentor_students' => Student::whereIn('section_id', $sectionIds)->count(),
+                'mentor_subjects' => Subject::whereIn('class_id', $classIds)->count(),
+                'attendance_today' => Attendance::whereIn('section_id', $sectionIds)
+                    ->where('date', date('Y-m-d'))
+                    ->where('status', 'present')
+                    ->count(),
+            ];
         }
 
         // Fetch Today's Handling Periods
@@ -47,10 +61,10 @@ class TeacherController extends Controller
         // Fetch Notifications
         $notifications = TeacherNotification::where('teacher_id', $teacher->id)
             ->latest()
-            ->take(10) // Limit to recent 10
+            ->take(10)
             ->get();
 
-        return view('teacher.dashboard', compact('stats', 'todayPeriods', 'notifications'));
+        return view('teacher.dashboard', compact('stats', 'todayPeriods', 'notifications', 'isMentor'));
     }
 
     public function attendanceIndex()
