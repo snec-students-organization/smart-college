@@ -9,6 +9,7 @@ use App\Models\Student;
 use App\Models\Attendance;
 use App\Models\Mark;
 use App\Models\BookIssue;
+use App\Models\Notice;
 
 class ParentController extends Controller
 {
@@ -27,36 +28,43 @@ class ParentController extends Controller
             return view('parent.dashboard', ['error' => 'No student profiles linked to your account.']);
         }
 
+        // Fetch Notices for Parents
+        $notices = Notice::whereIn('target_role', ['all', 'parent'])
+            ->where('publish_date', '<=', now())
+            ->latest()
+            ->take(5)
+            ->get();
+
         // Determine which child to show (default to first or selected via query param)
         $selectedChildId = $request->query('child_id');
-        $student = $selectedChildId 
-                    ? $children->firstWhere('id', $selectedChildId) 
-                    : $children->first();
-        
+        $student = $selectedChildId
+            ? $children->firstWhere('id', $selectedChildId)
+            : $children->first();
+
         if (!$student) {
-             $student = $children->first();
+            $student = $children->first();
         }
 
         // Stats for the selected child
         $attendanceDays = Attendance::where('student_id', $student->id)->count();
         $presentDays = Attendance::where('student_id', $student->id)->where('status', 'present')->count();
         $attendancePercentage = $attendanceDays > 0 ? round(($presentDays / $attendanceDays) * 100, 1) : 0;
-        
+
         $pendingBooks = BookIssue::where('student_id', $student->id)->whereNull('return_date')->count();
 
         // Recent Marks
         $recentMarks = Mark::with('subject')
-                            ->where('student_id', $student->id)
-                            ->latest()
-                            ->take(5)
-                            ->get();
-        
+            ->where('student_id', $student->id)
+            ->latest()
+            ->take(5)
+            ->get();
+
         // Attendance History (Last 5)
         $recentAttendance = Attendance::where('student_id', $student->id)
-                                      ->latest('date')
-                                      ->take(5)
-                                      ->get();
+            ->latest('date')
+            ->take(5)
+            ->get();
 
-        return view('parent.dashboard', compact('children', 'student', 'attendancePercentage', 'pendingBooks', 'recentMarks', 'recentAttendance'));
+        return view('parent.dashboard', compact('children', 'student', 'attendancePercentage', 'pendingBooks', 'recentMarks', 'recentAttendance', 'notices'));
     }
 }

@@ -59,6 +59,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('fees/student-fees', [\App\Http\Controllers\Admin\FeeController::class, 'collectShow'])->name('fees.collect.show');
     Route::post('fees/payment', [\App\Http\Controllers\Admin\FeeController::class, 'storePayment'])->name('fees.payment.store');
 
+    Route::resource('notices', \App\Http\Controllers\Admin\NoticeController::class)->except(['show', 'edit', 'update']);
+
     // Timetable Management
     Route::resource('timetable', \App\Http\Controllers\Admin\TimetableController::class);
     Route::post('timetable/assign-teacher', [\App\Http\Controllers\Admin\TimetableController::class, 'assignClassTeacher'])->name('timetable.assign-teacher');

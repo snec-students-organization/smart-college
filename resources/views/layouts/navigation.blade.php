@@ -117,6 +117,17 @@
                 </svg>
                 <span class="font-medium">{{ __('Library') }}</span>
             </x-nav-link>
+
+            <x-nav-link :href="route('admin.notices.index')" :active="request()->routeIs('admin.notices.*')"
+                class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 {{ request()->routeIs('admin.notices.*') ? 'bg-brand-600 text-white shadow-lg shadow-brand-600/20' : 'text-gray-600 hover:bg-gray-50 hover:text-brand-600' }}">
+                <svg class="w-5 h-5 {{ request()->routeIs('admin.notices.*') ? 'text-white' : 'text-gray-400 group-hover:text-brand-600' }}"
+                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M11 5.882V19.247A7.6 7.6 0 0117.5 13a7.6 7.6 0 01-6.5-7.118zM11 5.882v13.365A7.6 7.6 0 004.5 13a7.6 7.6 0 006.5-7.118z">
+                    </path>
+                </svg>
+                <span class="font-medium">{{ __('Notice Board') }}</span>
+            </x-nav-link>
         @endif
     </div>
 
@@ -252,6 +263,16 @@
                         </path>
                     </svg>
                     {{ __('Library') }}
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('admin.notices.index')" :active="request()->routeIs('admin.notices.*')"
+                    class="flex items-center gap-3 py-3 font-medium border-none !text-gray-700 hover:!text-brand-600 hover:!bg-brand-50 rounded-xl px-4 transition-all duration-200 {{ request()->routeIs('admin.notices.*') ? '!bg-brand-50 !text-brand-700' : '' }}">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M11 5.882V19.247A7.6 7.6 0 0117.5 13a7.6 7.6 0 01-6.5-7.118zM11 5.882v13.365A7.6 7.6 0 004.5 13a7.6 7.6 0 006.5-7.118z">
+                        </path>
+                    </svg>
+                    {{ __('Notice Board') }}
                 </x-responsive-nav-link>
             </div>
         @endif
