@@ -66,7 +66,7 @@
                                         </td>
                                         <td
                                             class="px-6 py-4 whitespace-nowrap text-sm 
-                                                    {{ $issue->due_date->isPast() ? 'text-red-600 font-bold' : 'text-gray-500' }}">
+                                                        {{ $issue->due_date->isPast() ? 'text-red-600 font-bold' : 'text-gray-500' }}">
                                             {{ $issue->due_date->format('d M Y') }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
