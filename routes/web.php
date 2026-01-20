@@ -18,6 +18,7 @@ Route::middleware('auth')->group(function () {
 // Admin Routes
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\AdminController::class, 'dashboard'])->name('dashboard');
+    Route::get('/parent-directory', [\App\Http\Controllers\AdminController::class, 'parentDirectory'])->name('parent-directory');
     Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
 
     // Academic Management
@@ -104,6 +105,7 @@ Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')
     Route::get('/attendance', [\App\Http\Controllers\StudentController::class, 'attendance'])->name('attendance');
     Route::get('/marks', [\App\Http\Controllers\StudentController::class, 'marks'])->name('marks');
     Route::get('/fees', [\App\Http\Controllers\StudentController::class, 'fees'])->name('fees');
+    Route::post('/parent', [\App\Http\Controllers\StudentController::class, 'storeParent'])->name('parent.store');
 });
 
 // Parent Routes

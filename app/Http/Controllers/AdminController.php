@@ -21,4 +21,10 @@ class AdminController extends Controller
 
         return view('admin.dashboard', compact('stats'));
     }
+
+    public function parentDirectory()
+    {
+        $classes = SchoolClass::with(['students.user', 'students.parent.user'])->get();
+        return view('admin.parent-directory', compact('classes'));
+    }
 }
