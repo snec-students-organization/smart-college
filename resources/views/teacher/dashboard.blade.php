@@ -71,6 +71,9 @@
                             <a href="{{ route('teacher.marks.index') }}" class="block w-full text-center px-4 py-2 bg-brand-600 text-white rounded-md hover:bg-brand-700">
                                 Enter Marks
                             </a>
+                            <a href="{{ route('teacher.books.recommend') }}" class="block w-full text-center px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700">
+                                Recommend Book
+                            </a>
                         </div>
                     </div>
                 </div>

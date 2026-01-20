@@ -13,9 +13,40 @@ use App\Models\Teacher;
 use App\Models\TeacherNotification;
 use App\Models\FeePayment;
 use App\Models\Fee;
+use App\Models\Book;
+use App\Models\BookRecommendation;
 
 class TeacherController extends Controller
 {
+    public function recommendBook()
+    {
+        $books = Book::all();
+        $classes = SchoolClass::with('sections')->get();
+        return view('teacher.books.recommend', compact('books', 'classes'));
+    }
+
+    public function storeRecommendation(Request $request)
+    {
+        $request->validate([
+            'book_id' => 'required|exists:books,id',
+            'type' => 'required|in:individual,section',
+            'student_id' => 'required_if:type,individual|nullable|exists:students,id',
+            'section_id' => 'required_if:type,section|nullable|exists:sections,id',
+            'notes' => 'nullable|string',
+        ]);
+
+        $teacher = Teacher::where('user_id', Auth::id())->first();
+
+        BookRecommendation::create([
+            'teacher_id' => $teacher->id,
+            'book_id' => $request->book_id,
+            'student_id' => $request->type === 'individual' ? $request->student_id : null,
+            'section_id' => $request->type === 'section' ? $request->section_id : null,
+            'notes' => $request->notes,
+        ]);
+
+        return redirect()->route('teacher.dashboard')->with('success', 'Book recommended successfully!');
+    }
     public function dashboard()
     {
         $user = Auth::user();

@@ -43,10 +43,19 @@ class StudentController extends Controller
             ->orderBy('period_number')
             ->get();
 
+        // Book Recommendations
+        $bookRecommendations = \App\Models\BookRecommendation::with(['book', 'teacher.user'])
+            ->where(function ($q) use ($student) {
+                $q->where('student_id', $student->id)
+                    ->orWhere('section_id', $student->section_id);
+            })
+            ->latest()
+            ->get();
+
         // Load class teacher
         $student->load(['school_class', 'section.class_teacher.user']);
 
-        return view('student.dashboard', compact('student', 'attendancePercentage', 'pendingBooks', 'recentMarks', 'timetable'));
+        return view('student.dashboard', compact('student', 'attendancePercentage', 'pendingBooks', 'recentMarks', 'bookRecommendations', 'timetable'));
     }
 
     public function attendance()

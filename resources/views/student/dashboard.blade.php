@@ -253,26 +253,19 @@
                 </div>
 
                 <!-- Recent Marks -->
-                <div class="bg-white/80 backdrop-blur-xl overflow-hidden shadow-soft rounded-2xl border border-gray-100">
+                <div class="bg-white/80 backdrop-blur-xl overflow-hidden shadow-soft rounded-2xl border border-gray-100 mb-6">
                     <div class="p-6 text-gray-900">
                         <div class="flex justify-between items-center mb-6">
                             <div class="flex items-center gap-3">
                                 <div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center">
-                                    <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
-                                        </path>
+                                    <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                                     </svg>
                                 </div>
                                 <h3 class="text-lg font-bold text-gray-900">Recent Marks</h3>
                             </div>
-                            <a href="{{ route('student.marks') }}"
-                                class="text-indigo-600 hover:text-indigo-700 text-sm font-bold flex items-center gap-1 transition-all">
-                                View All <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
-                                    </path>
-                                </svg>
+                            <a href="{{ route('student.marks') }}" class="text-indigo-600 hover:text-indigo-700 text-sm font-bold flex items-center gap-1 transition-all">
+                                View All <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                             </a>
                         </div>
                         @if($recentMarks->isNotEmpty())
@@ -280,27 +273,18 @@
                                 <table class="min-w-full divide-y divide-gray-100">
                                     <thead>
                                         <tr class="bg-gray-50/50">
-                                            <th
-                                                class="px-6 py-4 text-left text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                                                Subject</th>
-                                            <th
-                                                class="px-6 py-4 text-left text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                                                Exam</th>
-                                            <th
-                                                class="px-6 py-4 text-right text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                                                Score</th>
+                                            <th class="px-6 py-4 text-left text-[10px] font-bold text-gray-400 uppercase tracking-widest">Subject</th>
+                                            <th class="px-6 py-4 text-left text-[10px] font-bold text-gray-400 uppercase tracking-widest">Exam</th>
+                                            <th class="px-6 py-4 text-right text-[10px] font-bold text-gray-400 uppercase tracking-widest">Score</th>
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-gray-100/50">
                                         @foreach($recentMarks as $mark)
                                             <tr class="hover:bg-gray-50/30 transition-colors">
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">
-                                                    {{ $mark->subject->name }}</td>
-                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-medium">
-                                                    {{ $mark->exam_type }}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">{{ $mark->subject->name }}</td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-medium">{{ $mark->exam_type }}</td>
                                                 <td class="px-6 py-4 whitespace-nowrap text-right">
-                                                    <span
-                                                        class="inline-flex items-center px-3 py-1 bg-emerald-50 text-emerald-700 text-sm font-bold rounded-lg border border-emerald-100/50">
+                                                    <span class="inline-flex items-center px-3 py-1 bg-emerald-50 text-emerald-700 text-sm font-bold rounded-lg border border-emerald-100/50">
                                                         {{ $mark->marks_obtained }} / {{ $mark->total_marks }}
                                                     </span>
                                                 </td>
@@ -314,6 +298,62 @@
                                 <p class="text-gray-500 font-medium italic">No marks recorded yet.</p>
                             </div>
                         @endif
+                    </div>
+                </div>
+
+                <!-- Book Recommendations -->
+                <div class="mb-6">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
+                            <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-900">Recommended for You</h3>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        @forelse($bookRecommendations as $recommendation)
+                            <div class="bg-white/80 backdrop-blur-xl rounded-2xl p-6 border border-gray-100 shadow-soft hover:shadow-lg transition-all duration-300">
+                                <div class="flex items-start justify-between mb-4">
+                                    <div class="flex-1">
+                                        <h4 class="font-bold text-gray-900 text-lg leading-tight">{{ $recommendation->book->title }}</h4>
+                                        <p class="text-sm text-gray-500 font-medium mt-1">by {{ $recommendation->book->author }}</p>
+                                    </div>
+                                    <div class="p-2 bg-amber-50 rounded-lg">
+                                        <svg class="w-6 h-6 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+
+                                @if($recommendation->notes)
+                                    <div class="mb-4 p-3 bg-gray-50 rounded-xl border border-gray-100 relative">
+                                        <p class="text-sm text-gray-600 italic">"{{ $recommendation->notes }}"</p>
+                                        <div class="absolute -top-2 left-4 px-2 bg-gray-50 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Teacher's Note</div>
+                                    </div>
+                                @endif
+
+                                <div class="flex items-center gap-3 mt-4 pt-4 border-t border-gray-50">
+                                    <div class="w-8 h-8 rounded-full bg-brand-50 flex items-center justify-center font-bold text-brand-600 text-xs text-uppercase">
+                                        {{ substr($recommendation->teacher->user->name, 0, 1) }}
+                                    </div>
+                                    <div>
+                                        <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest leading-none">Recommended By</p>
+                                        <p class="text-xs font-bold text-gray-700 mt-1">{{ $recommendation->teacher->user->name }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="col-span-full py-12 text-center bg-white/50 rounded-2xl border border-dashed border-gray-200">
+                                <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <svg class="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                                    </svg>
+                                </div>
+                                <p class="text-gray-500 font-medium italic">Your teachers haven't recommended any books for you yet.</p>
+                            </div>
+                        @endforelse
                     </div>
                 </div>
 

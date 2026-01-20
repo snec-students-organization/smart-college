@@ -60,4 +60,9 @@ class ClassController extends Controller
     {
         return response()->json($class->subjects);
     }
+
+    public function getStudents(Section $section)
+    {
+        return response()->json($section->students()->with('user')->get());
+    }
 }

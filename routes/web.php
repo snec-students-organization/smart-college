@@ -13,6 +13,7 @@ Route::get('/dashboard', function () {
 Route::middleware('auth')->group(function () {
     Route::get('lookup/classes/{class}/sections', [\App\Http\Controllers\Admin\ClassController::class, 'getSections'])->name('lookup.sections');
     Route::get('lookup/classes/{class}/subjects', [\App\Http\Controllers\Admin\ClassController::class, 'getSubjects'])->name('lookup.subjects');
+    Route::get('lookup/sections/{section}/students', [\App\Http\Controllers\Admin\ClassController::class, 'getStudents'])->name('lookup.section_students');
 });
 
 // Admin Routes
@@ -97,6 +98,10 @@ Route::middleware(['auth', 'role:teacher'])->prefix('teacher')->name('teacher.')
 
     // Fee Management
     Route::post('/fee/mark-paid', [\App\Http\Controllers\TeacherController::class, 'markFeePaid'])->name('fee.mark-paid');
+
+    // Book Recommendations
+    Route::get('/books/recommend', [\App\Http\Controllers\TeacherController::class, 'recommendBook'])->name('books.recommend');
+    Route::post('/books/recommend', [\App\Http\Controllers\TeacherController::class, 'storeRecommendation'])->name('books.store-recommendation');
 });
 
 // Student Routes
